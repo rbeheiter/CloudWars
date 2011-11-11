@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudWars", "CloudWars\CloudWars\CloudWars.csproj", "{42A7DCA8-659C-4803-BCFB-7F298025F26A}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "CloudWarsContent", "CloudWars\CloudWarsContent\CloudWarsContent.contentproj", "{87F0DA5F-BEAF-4A4A-9843-A28CD4D2D278}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Xbox 360 = Debug|Xbox 360
+		Release|Xbox 360 = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Debug|Xbox 360.Deploy.0 = Debug|Xbox 360
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{42A7DCA8-659C-4803-BCFB-7F298025F26A}.Release|Xbox 360.Deploy.0 = Release|Xbox 360
+		{87F0DA5F-BEAF-4A4A-9843-A28CD4D2D278}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{87F0DA5F-BEAF-4A4A-9843-A28CD4D2D278}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

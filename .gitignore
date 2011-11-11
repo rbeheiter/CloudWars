@@ -1,0 +1,7 @@
+*.suo
+*.user
+*.cachefile
+/CloudWars/CloudWars/bin
+/CloudWars/CloudWars/obj
+/CloudWars/CloudWarsContent/bin
+/CloudWars/CloudWarsContent/obj
