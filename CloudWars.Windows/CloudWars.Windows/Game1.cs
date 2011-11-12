@@ -34,8 +34,24 @@ namespace CloudWars
         int inputLockoutCounter = 0;
         bool preventInput = false;
 
-        List<Unit> Units;
+        List<Player> Players;
+        Player CurrentPlayer;
         Unit CurrentSelectedUnit;
+
+        List<Unit> AllUnits
+        {
+            get
+            {
+                List<Unit> list = new List<Unit>();
+
+                foreach (Player player in Players)
+                {
+                    list.AddRange(player.Units);
+                }
+
+                return list;
+            }
+        }
 
         public Game1()
         {
@@ -53,10 +69,23 @@ namespace CloudWars
         {
             base.Initialize();
             cursorLocation = new Point(0, 0);
-            Units = new List<Unit>();
-            Units.Add(new Infantry("Bob", 2, 3));
-            Units.Add(new Infantry("Joe", 2, 4) { CurrentHP = 85 });
-            Units.Add(new Soldier("Lu", 2, 5) { CurrentHP = 50 });
+
+            Players = new List<Player>();
+
+            Player player1 = new Player();
+            player1.Units.Add(new Infantry("Bob", 2, 3));
+            player1.Units.Add(new Infantry("Joe", 2, 4) { CurrentHP = 85 });
+            player1.Units.Add(new Soldier("Lu", 2, 5) { CurrentHP = 50 });
+
+            Player player2 = new Player();
+            player2.Units.Add(new Infantry("Bob", 6, 3));
+            player2.Units.Add(new Infantry("Joe", 6, 4) { CurrentHP = 85 });
+            player2.Units.Add(new Soldier("Lu", 6, 5) { CurrentHP = 50 });
+
+            Players.Add(player1);
+            Players.Add(player2);
+
+            CurrentPlayer = player1;
         }
 
         /// <summary>
@@ -119,10 +148,11 @@ namespace CloudWars
 
         private void UpdateUnits(GameTime gameTime)
         {
-            foreach (Unit unit in Units)
-            {
-                unit.Update(gameTime);
-            }
+            foreach (Player player in Players)
+                foreach (Unit unit in player.Units)
+                {
+                    unit.Update(gameTime);
+                }
         }
 
         private void GetCursorInput()
@@ -167,7 +197,7 @@ namespace CloudWars
 
         private void SelectUnit()
         {
-            Unit unit = Units.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
+            Unit unit = CurrentPlayer.Units.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
 
             if (unit != null)
             {
@@ -188,6 +218,13 @@ namespace CloudWars
 
         private void MoveUnit()
         {
+            if (CurrentSelectedUnit == null)
+            {
+                // select a unit first
+                return;
+            }
+
+
             if (cursorLocation.DistanceTo(CurrentSelectedUnit.GridLocation) <= CurrentSelectedUnit.MaxMove)
             {
                 CurrentSelectedUnit.GridLocation = cursorLocation;
@@ -238,7 +275,7 @@ namespace CloudWars
 
         private void DrawHoverUnitDescription()
         {
-            Unit unit = Units.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
+            Unit unit = AllUnits.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
 
             if (unit != null)
             {
@@ -277,7 +314,7 @@ namespace CloudWars
 
         private void DrawUnits()
         {
-            foreach (Unit unit in Units)
+            foreach (Unit unit in AllUnits)
             {
                 unit.Draw(spriteBatch);
             }
