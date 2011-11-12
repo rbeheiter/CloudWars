@@ -63,7 +63,7 @@ namespace CloudWars
             if (RealLocation != endLocation)
             {
                 MoveAnimation.Position = new Vector2(RealLocation.X, RealLocation.Y);
-                MoveAnimation.Draw(spriteBatch);
+                MoveAnimation.Draw(spriteBatch, RealLocation.X > endLocation.X ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
             }
             else
             {

@@ -15,7 +15,6 @@ namespace CloudWars.Animation
         public Vector2 Origin;
         public float Rotation = 0f;
         public float Scale = 1f;
-        public SpriteEffects SpriteEffect;
         protected Rectangle[] Rectangles;
         protected int FrameIndex = 0;
 
@@ -29,10 +28,10 @@ namespace CloudWars.Animation
                     i * width, 0, width, Texture.Height);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteEffects spriteEffect)
         {
             spriteBatch.Draw(Texture, Position, Rectangles[FrameIndex],
-                Color, Rotation, Origin, Scale, SpriteEffect, 0f);
+                Color, Rotation, Origin, Scale, spriteEffect, 0f);
         }
     }
 }

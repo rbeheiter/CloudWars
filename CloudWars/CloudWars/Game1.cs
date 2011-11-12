@@ -126,23 +126,25 @@ namespace CloudWars
 
         private void GetCursorInput()
         {
+            int stickX = (int)(GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * 2);
+            int stickY = (int)(GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * 2);
 
-            if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadUp) && cursorLocation.Y > 0)
+            if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadUp) || stickY > 0) && cursorLocation.Y > 0)
             {
                 cursorLocation.Y--;
                 preventInput = true;
             }
-            if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadDown) && cursorLocation.Y < GRID_HEIGHT)
+            if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadDown) || stickY < 0) && cursorLocation.Y < GRID_HEIGHT)
             {
                 cursorLocation.Y++;
                 preventInput = true;
             }
-            if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadRight) && cursorLocation.X < GRID_WIDTH)
+            if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadRight) || stickX > 0) && cursorLocation.X < GRID_WIDTH)
             {
                 cursorLocation.X++;
                 preventInput = true;
             }
-            if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadLeft) && cursorLocation.X > 0)
+            if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadLeft) || stickX < 0) && cursorLocation.X > 0)
             {
                 cursorLocation.X--;
                 preventInput = true;
