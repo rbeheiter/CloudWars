@@ -30,7 +30,7 @@ namespace CloudWars
         SpriteFont nameFont;
         SpriteFont titleFont;
 
-        Point cursorLocation;
+        Point cursorGridLocation;
         int inputLockoutCounter = 0;
         bool preventInput = false;
 
@@ -68,7 +68,7 @@ namespace CloudWars
         protected override void Initialize()
         {
             base.Initialize();
-            cursorLocation = new Point(0, 0);
+            cursorGridLocation = new Point(0, 0);
 
             Players = new List<Player>();
 
@@ -162,30 +162,30 @@ namespace CloudWars
 
             if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadUp)
                 || Keyboard.GetState().IsKeyDown(Keys.Up)
-                || stickY > 0) && cursorLocation.Y > 0)
+                || stickY > 0) && cursorGridLocation.Y > 0)
             {
-                cursorLocation.Y--;
+                cursorGridLocation.Y--;
                 preventInput = true;
             }
             if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadDown)
                 || Keyboard.GetState().IsKeyDown(Keys.Down)
-                || stickY < 0) && cursorLocation.Y < GRID_HEIGHT)
+                || stickY < 0) && cursorGridLocation.Y < GRID_HEIGHT)
             {
-                cursorLocation.Y++;
+                cursorGridLocation.Y++;
                 preventInput = true;
             }
             if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadRight)
                 || Keyboard.GetState().IsKeyDown(Keys.Right)
-                || stickX > 0) && cursorLocation.X < GRID_WIDTH)
+                || stickX > 0) && cursorGridLocation.X < GRID_WIDTH)
             {
-                cursorLocation.X++;
+                cursorGridLocation.X++;
                 preventInput = true;
             }
             if ((GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadLeft)
                 || Keyboard.GetState().IsKeyDown(Keys.Left)
-                || stickX < 0) && cursorLocation.X > 0)
+                || stickX < 0) && cursorGridLocation.X > 0)
             {
-                cursorLocation.X--;
+                cursorGridLocation.X--;
                 preventInput = true;
             }
             if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A)
@@ -197,7 +197,7 @@ namespace CloudWars
 
         private void SelectUnit()
         {
-            Unit unit = CurrentPlayer.Units.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
+            Unit unit = CurrentPlayer.Units.Where(u => cursorGridLocation == u.GridLocation).FirstOrDefault();
 
             if (unit != null)
             {
@@ -216,6 +216,30 @@ namespace CloudWars
             }
         }
 
+        private List<Point> HighlightPossibleSquares()
+        {
+            if (CurrentSelectedUnit == null)
+            {
+                return new List<Point>();
+            }
+
+            var unitLocation = CurrentSelectedUnit.GridLocation;
+            List<Point> validLocations = new List<Point>();
+
+            for (int i = 0; i < GRID_HEIGHT; i++)
+            {
+                for (int j = 0; j < GRID_WIDTH; j++)
+                {
+                    if ((new Point(j, i)).DistanceTo(CurrentSelectedUnit.GridLocation) <= CurrentSelectedUnit.MaxMove)
+                    {
+                        validLocations.Add(new Point(j, i));
+                    }
+                }
+            }
+
+            return validLocations;
+        }
+
         private void MoveUnit()
         {
             if (CurrentSelectedUnit == null)
@@ -225,9 +249,9 @@ namespace CloudWars
             }
 
 
-            if (cursorLocation.DistanceTo(CurrentSelectedUnit.GridLocation) <= CurrentSelectedUnit.MaxMove)
+            if (cursorGridLocation.DistanceTo(CurrentSelectedUnit.GridLocation) <= CurrentSelectedUnit.MaxMove)
             {
-                CurrentSelectedUnit.GridLocation = cursorLocation;
+                CurrentSelectedUnit.GridLocation = cursorGridLocation;
             }
             else
             {
@@ -243,9 +267,11 @@ namespace CloudWars
         {
             GraphicsDevice.Clear(Color.Beige);
 
+            List<Point> tilesToHighlight = HighlightPossibleSquares();
+
             spriteBatch.Begin();
 
-            DrawTiles();
+            DrawTiles(tilesToHighlight);
             DrawUnits();
             DrawCursor();
             DrawHoverUnitDescription();
@@ -256,7 +282,7 @@ namespace CloudWars
             base.Draw(gameTime);
         }
 
-        private void DrawTiles()
+        private void DrawTiles(List<Point> tilesToHighlight)
         {
             for (int x = 0; x <= GRID_WIDTH; x++)
             {
@@ -267,7 +293,14 @@ namespace CloudWars
                                                 GRID_TILE_SIZE,
                                                 GRID_TILE_SIZE);
 
-                    spriteBatch.Draw(grassTileTexture, tilePos, Color.White);
+                    Color tileTint = Color.White;
+
+                    if (tilesToHighlight.Contains(new Point(x, y)))
+                    {
+                        tileTint = Color.LightBlue;
+                    }
+
+                    spriteBatch.Draw(grassTileTexture, tilePos, tileTint);
 
                 }
             }
@@ -275,7 +308,7 @@ namespace CloudWars
 
         private void DrawHoverUnitDescription()
         {
-            Unit unit = AllUnits.Where(u => cursorLocation == u.GridLocation).FirstOrDefault();
+            Unit unit = AllUnits.Where(u => cursorGridLocation == u.GridLocation).FirstOrDefault();
 
             if (unit != null)
             {
@@ -293,7 +326,7 @@ namespace CloudWars
             if (CurrentSelectedUnit != null)
             {
                 //For Debug
-                spriteBatch.DrawString(nameFont, string.Format("[Distance: {0}]", cursorLocation.DistanceTo(CurrentSelectedUnit.GridLocation)), new Vector2(450, 455), Color.DarkBlue);
+                spriteBatch.DrawString(nameFont, string.Format("[Distance: {0}]", cursorGridLocation.DistanceTo(CurrentSelectedUnit.GridLocation)), new Vector2(450, 455), Color.DarkBlue);
 
                 spriteBatch.DrawString(nameFont, "Selected:", new Vector2(575, 455), Color.DarkBlue);
                 spriteBatch.DrawString(nameFont, CurrentSelectedUnit.Name, new Vector2(655, 450), Color.DarkBlue);
@@ -304,8 +337,8 @@ namespace CloudWars
 
         private void DrawCursor()
         {
-            var cursorPos = new Rectangle(GRID_TILE_SIZE * cursorLocation.X,
-                                          GRID_TILE_SIZE * cursorLocation.Y,
+            var cursorPos = new Rectangle(GRID_TILE_SIZE * cursorGridLocation.X,
+                                          GRID_TILE_SIZE * cursorGridLocation.Y,
                                           GRID_TILE_SIZE,
                                           GRID_TILE_SIZE);
 
